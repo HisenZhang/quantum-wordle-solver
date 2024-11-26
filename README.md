@@ -1,1 +1,3 @@
 # quantum-wordle-solver
+
+We present a novel hybrid quantum-classical approach to solving semi-structured search problems, using Wordle as a case study. While Grover's algorithm excels at unstructured search and classical methods handle structured problems efficiently, semi-structured problems remain challenging. Our hybrid solution leverages Grover's algorithm as a subroutine within a classical framework, demonstrating improved efficiency over purely quantum approaches.
