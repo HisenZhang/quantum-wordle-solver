@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 from collections import defaultdict
 import numpy as np
+import seaborn as sns
+
+sns.set_theme(context="paper", style="white", font_scale=3)
 
 
 from wordle import Wordle
@@ -38,7 +41,7 @@ def compare_solvers(n_games=500):
     return results
 
 def plot_burndown(results):
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(16, 6))
     
     colors = {'Vanilla': 'blue', 'Feedback': 'orange','Frequency':'green'}
     
@@ -54,17 +57,19 @@ def plot_burndown(results):
                 label=solver_name,
                 color=colors[solver_name], 
                 linestyle='-.',
-                linewidth=3, 
+                linewidth=6, 
                 alpha=.5)
     
     plt.xlim(0,10)
     plt.yscale('log')
     
-    plt.xlabel('Guess Number')
-    plt.ylabel('Remaining Possibilities')
-    plt.title('Wordle Solver Burndown Comparison')
+    plt.xlabel('Iteration')
+    plt.ylabel('Search Space')
+    plt.title('Wordle Solver Comparison')
     plt.grid(True, alpha=0.3)
     plt.legend()
+    
+    plt.tight_layout()
     
     plt.savefig("../result/figures/compare.png")
     plt.savefig("../result/figures/compare.pdf")
