@@ -7,22 +7,25 @@ sns.set_theme(context="paper", style="white", font_scale=3)
 
 
 from wordle import Wordle
-from linearSearch import LinearSearchWordleSolver, FrequencyWordleSolver
-from vanilla import VanillaWordleSolver
+from classicalSolver import PruninghWordleSolver, FrequencyWordleSolver
+from hybridSolver import HybridWordleSolver
 
-def compare_solvers(n_games=500):
+def compare_solvers(n_games=500): #500
     results = defaultdict(list)
     solvers = {
         # 'Vanilla': VanillaWordleSolver,
-        'Feedback': LinearSearchWordleSolver,
-        'Frequency': FrequencyWordleSolver
+        'Pruning': PruninghWordleSolver,
+        'Frequency': FrequencyWordleSolver,
+        'Hybrid': HybridWordleSolver
     }
     
     for solver_name, solver_class in solvers.items():
         for _ in range(n_games):
+            if _ % 10 == 0:
+                print(solver_name, " ", _ ,"/", n_games)
             game = Wordle('../unique_words.txt')
-            solver = solver_class(game.word_list)
             game.start_game()
+            solver = solver_class(game.word_list, target_word = game.target_word)
             
             # Track remaining possibilities for this game
             game_burndown = [len(solver.possible_words)]
@@ -41,9 +44,9 @@ def compare_solvers(n_games=500):
     return results
 
 def plot_burndown(results):
-    plt.figure(figsize=(16, 6))
+    plt.figure(figsize=(16, 8))
     
-    colors = {'Vanilla': 'blue', 'Feedback': 'orange','Frequency':'green'}
+    colors = {'Vanilla': 'orange', 'Pruning': 'blue','Frequency':'green','Hybrid':'red'}
     
     for solver_name, burndowns in results.items():
         # Plot individual traces with high transparency

@@ -1,5 +1,19 @@
-class LinearSearchWordleSolver:
-    def __init__(self, word_list):
+class VanillaWordleSolver:
+    def __init__(self, word_list, **kwargs):
+        self.possible_words = set(word_list)
+        self.feedback_history = []
+        
+        
+    def update_possibilities(self, guess, feedback):
+        pass
+        
+    def get_next_guess(self):
+        guess = self.possible_words.pop()
+        return guess
+        
+
+class PruninghWordleSolver:
+    def __init__(self, word_list, **kwargs):
         self.possible_words = set(word_list)
         self.feedback_history = []
         
@@ -25,7 +39,7 @@ class LinearSearchWordleSolver:
         return True
     
 class FrequencyWordleSolver:
-    def __init__(self, word_list):
+    def __init__(self, word_list, **kwargs):
         self.possible_words = set(word_list)
         self.feedback_history = []
         # Calculate letter frequencies once at initialization

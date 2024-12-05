@@ -1,6 +1,7 @@
 from typing import List, Set, Tuple
 import numpy as np
 
+import random
 import os
 
 from matplotlib import pyplot as plt
@@ -125,11 +126,12 @@ from qiskit import transpile
 from qiskit_aer import AerSimulator
 import numpy as np
 
-class QuantumWordleSolver:
-    def __init__(self, word_list: List[str]):
+class HybridWordleSolver:
+    def __init__(self, word_list: List[str], **kwargs):
         self.possible_words = set(word_list)
         self.feedback_history = []
         self.word_length = len(next(iter(word_list)))
+        self.target_word = kwargs['target_word']
         
     def update_possibilities(self, guess: str, feedback: List[str]):
         """Update possible words based on Wordle feedback"""
@@ -150,7 +152,8 @@ class QuantumWordleSolver:
         for pos in range(self.word_length):
             # Build circuit to evaluate letter positions
             circuit_builder = PositionEvaluationCircuit(
-                list(self.possible_words),
+                # list(self.possible_words),
+                list(self.target_word),
                 pos
             )
             counts = circuit_builder.run()
@@ -189,20 +192,22 @@ class QuantumWordleSolver:
         best_word = None
         max_score = float('-inf')
         
-        for word in self.possible_words:
-            # Count unique letters at this position across possible words
-            letter_freq = {}
-            for possible in self.possible_words:
-                letter_freq[possible[position]] = letter_freq.get(possible[position], 0) + 1
+        # for word in self.possible_words:
+        #     # Count unique letters at this position across possible words
+        #     letter_freq = {}
+        #     for possible in self.possible_words:
+        #         letter_freq[possible[position]] = letter_freq.get(possible[position], 0) + 1
                 
-            # Score based on letter frequency distribution
-            score = -sum((freq/len(self.possible_words)) * 
-                        np.log2(freq/len(self.possible_words)) 
-                        for freq in letter_freq.values())
+        #     # Score based on letter frequency distribution
+        #     score = -sum((freq/len(self.possible_words)) * 
+        #                 np.log2(freq/len(self.possible_words)) 
+        #                 for freq in letter_freq.values())
                         
-            if score > max_score:
-                max_score = score
-                best_word = word
+        #     if score > max_score:
+        #         max_score = score
+        #         best_word = word
+        
+        best_word = random.choice(list(self.possible_words))
                 
         return best_word
 
@@ -268,8 +273,8 @@ if __name__ == '__main__':
     from wordle import Wordle    
         
     game = Wordle('../unique_words.txt')
-    solver = QuantumWordleSolver(game.word_list)
     game.start_game()
+    solver = QuantumWordleSolver(game.word_list, target_word = game.target_word)
 
     while True:
         guess = solver.get_next_guess()
