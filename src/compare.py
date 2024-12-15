@@ -3,14 +3,18 @@ from collections import defaultdict
 import numpy as np
 import seaborn as sns
 
+import sys
+
 sns.set_theme(context="paper", style="white", font_scale=3)
 
+dataset = sys.argv[1]
+n_repeat = int(sys.argv[2])
 
 from wordle import Wordle
 from classicalSolver import PruninghWordleSolver, FrequencyWordleSolver
 from hybridSolver import HybridWordleSolver
 
-def compare_solvers(n_games=500): #500
+def compare_solvers(n_games=n_repeat): #500
     results = defaultdict(list)
     solvers = {
         # 'Vanilla': VanillaWordleSolver,
@@ -23,7 +27,7 @@ def compare_solvers(n_games=500): #500
         for _ in range(n_games):
             if _ % 10 == 0:
                 print(solver_name, " ", _ ,"/", n_games)
-            game = Wordle('../unique_words.txt')
+            game = Wordle(f'../{dataset}.txt')
             game.start_game()
             solver = solver_class(game.word_list, target_word = game.target_word)
             
@@ -74,8 +78,8 @@ def plot_burndown(results):
     
     plt.tight_layout()
     
-    plt.savefig("../result/figures/compare.png")
-    plt.savefig("../result/figures/compare.pdf")
+    plt.savefig(f"../result/figures/compare_{dataset}_{n_repeat}.png")
+    plt.savefig(f"../result/figures/compare_{dataset}_{n_repeat}.pdf")
     plt.show()
     
 results = compare_solvers()
